@@ -2,7 +2,8 @@
 #define MEN_H
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <stdint.h>
+#include <math.h>
 #define SIZE 9
 
 #define LINE1 63
@@ -27,6 +28,8 @@
 #define ROND  1
 #define VIDE  0
 
+#define MASQUE_CASE 0
+#define MASQUE_BILLE 1
 typedef struct _boite
 {
   int terrain;
