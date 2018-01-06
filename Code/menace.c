@@ -26,31 +26,15 @@ int nb_case_libre(int terrain)
   return cpt;
 }
 
-int CreerMasque(int Case, int typeMasque)		//case de 1 à 9 et non de 0 à 8
+uint64_t CreerMasque(int Case, int typeMasque)		//case de 1 à 9 et non de 0 à 8
 {
 	assert(Case!=0);
-	uint64_t masque=0;
-	uint32_t limite;
-	uint32_t i;
-	uint32_t stockage_info=0;
 	if(typeMasque==MASQUE_CASE)
-	{
-		limite=18;						//un terrain est codé sur 18 bits
-		stockage_info=2;				//une case sur 2 bits
-	}
+        return 3 <<(Case-1) *2;
 	else if(typeMasque==MASQUE_BILLE)
-	{
-		limite=64;						//les billes totales sur 64 bits
-		stockage_info=7;				//les billes d'une case sur 7 bits
-	}
-
-	for(i=0;i<limite;i++)						//création bit par bit du masque
-	{
-		if(i< Case * stockage_info & i>= (Case-1) * stockage_info)		//si le bit parcouru est  un bit de la case souhaitée
-			masque+= pow(2,i);					//on met le bit à 1 ( donc on ajoute 2^i)
-												//sinon il sera à 0 et on passe au bit suivant
-	}
-	return masque;
+        return 127 <<(Case-1) *7;
+    else
+        return 0;
 }
 int main(int argc, char const *argv[]) {
 
