@@ -12,7 +12,7 @@ int set_case(int terrain, int cases, int value) // cases diot etre le numéro de
 
 int get_case(int terrain, int cases)// cases diot etre une des constant le numéro de la case;
 {
-  return (terrain&(3<<((cases-1)*2)))/(cases/3);
+  return (terrain&CreerMasque(cases,MASQUE_CASE))/(cases/3);
 }
 
 int nb_case_libre(int terrain)
@@ -24,6 +24,45 @@ int nb_case_libre(int terrain)
   }
 
   return cpt;
+}
+
+int symetrie_v(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie verticale de t2
+{
+	return 	(get_case(t1,1)==get_case(t2,3))&&(get_case(t,2)==get_case(t2,2))&&(get_case(t1,3)==get_case(t2,1))&&
+		(get_case(t1,4)==get_case(t2,6))&&(get_case(t,5)==get_case(t2,5))&&(get_case(t1,6)==get_case(t2,4))&&
+		(get_case(t1,7)==get_case(t2,9))&&(get_case(t,8)==get_case(t2,8))&&(get_case(t1,9)==get_case(t2,7));
+}
+
+
+int symetrie_h(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie horizontale de t2
+{
+	return 	(get_case(t1,1)==get_case(t2,7))&&(get_case(t,4)==get_case(t2,4))&&(get_case(t1,7)==get_case(t2,1))&&
+		(get_case(t1,2)==get_case(t2,8))&&(get_case(t,5)==get_case(t2,5))&&(get_case(t1,8)==get_case(t2,2))&&
+		(get_case(t1,3)==get_case(t2,9))&&(get_case(t,6)==get_case(t2,6))&&(get_case(t1,9)==get_case(t2,3));
+}
+
+
+int symetrie_d1(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie horizontale de t2
+{
+	return 	(get_case(t1,1)==get_case(t2,9))&&(get_case(t,2)==get_case(t2,6))&&(get_case(t1,3)==get_case(t2,3))&&
+		(get_case(t1,4)==get_case(t2,8))&&(get_case(t,5)==get_case(t2,5))&&(get_case(t1,6)==get_case(t2,2))&&
+		(get_case(t1,7)==get_case(t2,7))&&(get_case(t,8)==get_case(t2,4))&&(get_case(t1,9)==get_case(t2,1));
+}
+
+
+int symetrie_d1(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie diagonale(/) de t2
+{
+	return 	(get_case(t1,1)==get_case(t2,9))&&(get_case(t,2)==get_case(t2,6))&&(get_case(t1,3)==get_case(t2,3))&&
+		(get_case(t1,4)==get_case(t2,8))&&(get_case(t,5)==get_case(t2,5))&&(get_case(t1,6)==get_case(t2,2))&&
+		(get_case(t1,7)==get_case(t2,7))&&(get_case(t,8)==get_case(t2,4))&&(get_case(t1,9)==get_case(t2,1));
+}
+
+
+int symetrie_d2(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie diagonale(\) de t2
+{
+	return 	(get_case(t1,1)==get_case(t2,1))&&(get_case(t,2)==get_case(t2,4))&&(get_case(t1,3)==get_case(t2,7))&&
+		(get_case(t1,4)==get_case(t2,2))&&(get_case(t,5)==get_case(t2,5))&&(get_case(t1,6)==get_case(t2,8))&&
+		(get_case(t1,7)==get_case(t2,3))&&(get_case(t,8)==get_case(t2,6))&&(get_case(t1,9)==get_case(t2,9));
 }
 
 uint64_t CreerMasque(int Case, int typeMasque)		//case de 1 à 9 et non de 0 à 8
