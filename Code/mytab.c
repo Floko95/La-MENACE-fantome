@@ -8,21 +8,6 @@ uint64_t mytabsize(void *p, uint64_t sizeof_element);
 void myfree(void *p);
 void affichage(uint32_t *p);
 
-
-int main(int argc, char const *argv[]) {
-
-  uint64_t i = 0;
-  uint32_t *tab = mymalloc(100*sizeof(uint32_t));
-  for (i=0; i<100; i++)
-  {
-    tab[i]=2*i;
-  }
-  affichage(tab);
-  printf("%lu\n",mytabsize(tab,sizeof(float)));
-  myfree(tab);
-  return 0;
-}
-
 void* mymalloc(uint64_t i)
 {
   uint64_t *p = malloc(i+8);
