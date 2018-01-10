@@ -1,28 +1,13 @@
 #ifndef MEN_H
 #define MEN_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
+
+//Definition des constante symbolique.
 #define SIZE 9
-
-#define LINE1 63
-#define LINE2 4032
-#define LINE3 258048
-
-#define COLUMN1 12483
-#define COLUMN2 49932
-#define COLUMN3 199728
-
-#define CASE1 3
-#define CASE2 12
-#define CASE3 48
-#define CASE4 192
-#define CASE5 768
-#define CASE6 3072
-#define CASE7 12288
-#define CASE8 49152
-#define CASE9 196608
 
 #define CROIX 2
 #define ROND  1
@@ -30,14 +15,28 @@
 
 #define MASQUE_CASE 0
 #define MASQUE_BILLE 1
+
+
 typedef struct _boite
 {
-  int terrain;
-  int *possibilite;
+  int32_t terrain;
+  int64_t bille;
   struct _boite **suivants;
-  struct _boite *pere;
 } boite;
 
+int set_case(int terrain, int cases, int value);
+int get_case(int terrain, int cases);
+int nb_case_libre(int terrain);
+int symetrie_v(int32_t t1, int32_t t2);
+int symetrie_h(int32_t t1, int32_t t2);
+int symetrie_d1(int32_t t1, int32_t t2);
+int symetrie_d2(int32_t t1, int32_t t2);
+int rotationD90(int32_t t1,int32_t t2);
+int rotationG90(int32_t t1,int32_t t2);
+int64_t CreerMasque(int Case, int typeMasque);
+void creer_graphe(boite* b, int32_t* figure, boite** addresse);
+int32_t verify_tab(int32_t terrain, int32_t* tab);
+boite* creer_noeud(int32_t terrain);
 
 
 #endif
