@@ -64,7 +64,15 @@ int symetrie_d2(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie di
 		(get_case(t1,4)==get_case(t2,2))&&(get_case(t,5)==get_case(t2,5))&&(get_case(t1,6)==get_case(t2,8))&&
 		(get_case(t1,7)==get_case(t2,3))&&(get_case(t,8)==get_case(t2,6))&&(get_case(t1,9)==get_case(t2,9));
 }
+int rotationD90(uint32_t t1,uint32_t t2)//on regarde si en tournant t1 de 90 degrés vers la droite on obtient t2
+{
+	return (get_case(t1,1)==get_case(t2,3)) && (get_case(t1,2)==get_case(t2,6)) && (get_case(t1,3)==get_case(t2,9)) && (get_case(t1,4) == get_case(t2,2)) && (get_case(t1,6) == get_case(t2,8)) && (get_case(t1,7)== get_case(t2,1)) && (get_case(t1,8)==get_case(t2,4)) && (get_case(t1,9) == get_case(t2,7)) ;
+}
 
+int rotationG90(uint32_t t1,uint32_t t2)//on regarde si en tournant t1 de 90 degrés vers la gauche on obtient t2
+{
+	return (get_case(t1,1)==get_case(t2,7)) && (get_case(t1,2)==get_case(t2,4)) && (get_case(t1,3)==get_case(t2,1)) && (get_case(t1,4) == get_case(t2,8)) && (get_case(t1,6) == get_case(t2,2)) && (get_case(t1,7)== get_case(t2,9)) && (get_case(t1,8)==get_case(t2,6)) && (get_case(t1,9) == get_case(t2,3)) ;
+}
 uint64_t CreerMasque(int Case, int typeMasque)		//case de 1 à 9 et non de 0 à 8
 {
 	assert(Case!=0);
