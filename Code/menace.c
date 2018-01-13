@@ -167,8 +167,45 @@ void afficheTerrain(uint32_t terrain)
   printf("\n");
 }
 
+uint64_t get_bille(uint64_t billes, int Case)
+{
+  return (billes&CreerMasque(Case,MASQUE_BILLE))/(CreerMasque(Case,MASQUE_BILLE)/127);
+}
+uint64_t set_bille(uint64_t billes, int Case, int value) //renvoie l'entier billes avec la bille souhaitée modifiée
+{
+    return billes|(value<<((Case-1)*7));
+}
+uint64_t sommeBilles(uint64_t billes)
+{
+	uint32_t i;
+	uint32_t somme=get_bille(billes,1);
+	for (i=1;i<9;i++)
+	{
+		somme+= get_bille(billes,i+1);
+	}
+	return somme;
+}
+int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra jouer le prochain coup
+{
+	uint32_t nombre_aleatoire = rand()%sommeBilles(billes);
+
+	printf("nb alea: %d\n", nombre_aleatoire);
+
+	uint32_t sommetmp=0;
+	int i;
+	for(i=0;i<9;i++)
+	{
+		if ((nombre_aleatoire >= sommetmp) & (nombre_aleatoire < sommetmp + get_bille(billes,i+1)))
+			return i+1;
+		else
+			sommetmp+=get_bille(billes,i+1);
+	}
+	return 0;
+}
+
 int main(int argc, char const *argv[])
 {
+     srand(time(NULL));
   int32_t* tab = mymalloc(sizeof(int32_t)*10000);
   boite** add = mymalloc(sizeof(boite*)*10000);
   boite* b = creer_noeud(0);
@@ -176,5 +213,14 @@ int main(int argc, char const *argv[])
   creer_graphe(b,tab,add);
   //int32_t a =0x2AAAA, b=0x2AAAA;
   //printf("%d | %d | %d ",rotation180(a, b),get_case(a, 9),get_case(b, 1));
+  //---tests des billes----------------
+    /*uint64_t c = 0x7FFFFFFFFFFFFFFF ;
+	printf("%ld\n",c);
+	printf("%ld\n",get_bille(c,1) );
+	printf("%ld\n",get_bille(c,5) );
+	printf("%ld\n",get_bille(c,9) );
+	printf("%ld\n",sommeBilles(c) );
+	printf("%ld\n",ProchainCoup(c) );
+	printf("%ld\n",ProchainCoup(c) );*/
   return 0;
 }
