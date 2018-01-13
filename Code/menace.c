@@ -202,7 +202,31 @@ int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra joue
 	}
 	return 0;
 }
+//-----------------------interface utilisateur-----------------------------
+int promptCoup()
+{
+    printf("entrez un entier entre 1 et 9 pour déterminer la case où jouer\n (1 pour en haut à gauche et 9 pour en bas à droite)\n");
+    int i;
+    scanf("%d",&i);
+    while(i<=0 | i>9)
+    {
+        printf("N'entrez qu'un entier de 1 à 9");
+      scanf("%d",&i);
+    }
+    return i;
 
+}
+
+int32_t promptGamemode()
+{
+
+    int32_t i=-1;
+     while(i<0)
+        printf("Voulez vous jouer contre l'IA ou voulez vous que l'IA joue contre elle-même? \n(0 pour JvsIA et N (positif) pour N parties de IAvsIA)");
+    return i;
+}
+
+//----------------------------------------------------------------------
 int main(int argc, char const *argv[])
 {
      srand(time(NULL));
@@ -221,6 +245,6 @@ int main(int argc, char const *argv[])
 	printf("%ld\n",get_bille(c,9) );
 	printf("%ld\n",sommeBilles(c) );
 	printf("%ld\n",ProchainCoup(c) );
-	printf("%ld\n",ProchainCoup(c) );*/
+	printf("%ld\n",ProchainCoup(c) ); -1 croix 1 rond */
   return 0;
 }
