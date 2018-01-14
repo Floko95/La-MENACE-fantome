@@ -135,9 +135,7 @@ int32_t verify_tab(int32_t terrain, int32_t* tab)
 	int32_t i = 0;
 	for(i=0; tab[i]!=0; i++)
 	{
-		if (symetrie_v(terrain, tab[i]) || symetrie_h(terrain, tab[i]) || symetrie_d1(terrain, tab[i])
-        || symetrie_d2(terrain, tab[i]) || rotation180(terrain,tab[i]) || rotationD90(terrain, tab[i])
-        || rotationG90(terrain, tab[i]) || terrain == tab[i]) return i;
+		if (verify_sym(terrain,tab[i])) return i;
 	}
 	return -i;
 }
