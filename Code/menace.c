@@ -277,18 +277,18 @@ boite* choix_graphe()
         }
         else
         {
-            pritnf("Création d'une nouvelle IA.");
+            printf("Création d'une nouvelle IA.");
         }
     }
     else
     {
-         pritnf("Aucun fichier valable de IA n'a été trouvé. Création d'un nouveau potentiel terminator.");
+         printf("Aucun fichier valable de IA n'a été trouvé. Création d'un nouveau potentiel terminator.");
     }
-        int32_t* tab = mymalloc(sizeof(int32_t)*850);
-        boite** add = mymalloc(sizeof(boite*)*850);
-        boite* b = creer_noeud(0);
-        creer_graphe(b,tab,add);
-        return b;
+    int32_t* tab = mymalloc(sizeof(int32_t)*850);
+    boite** add = mymalloc(sizeof(boite*)*850);
+    boite* b = creer_noeud(0);
+    creer_graphe(b,tab,add);
+    return b;
 
 
 }
