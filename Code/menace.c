@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "menace.h"
-#include "mytab.h"
+
 
 
 int set_case(int terrain, int cases, int value) // cases diot etre le numéro de la case; value doit etre CROIX ROND ou VIDE
@@ -115,7 +115,6 @@ void creer_graphe(boite* b, int32_t* figure, boite** addresse)
           b->suivants[n] = tmp;
           figure[-j] = tmp->terrain;
           addresse[-j] = b->suivants[n];
-          afficheTerrain(tmp->terrain);
           creer_graphe(b->suivants[n], figure, addresse);
         }
         else
@@ -187,9 +186,10 @@ void charger_graphe(boite* b, boite** adresse, FILE* load)
   if(b!=NULL)
   {
     int32_t i = 0;
-    if(checkfree(b, adresse))
+    printf("%p   %p   %ld   %p\n",b,&(b->bille),sizeof(int64_t),load);
+    if(checkfree(b, adresse) && fread(&(b->bille), sizeof(int64_t), 1, load)==1)
     {
-      fread(&(b->bille), sizeof(int64_t), 1, load);
+      //fread(&(b->bille), sizeof(int64_t), 1, load);
       while(adresse[n]!=NULL)                                                   //on trouve la premiere place libre dans adresse
         n++;
       adresse[n]=b;
@@ -276,9 +276,6 @@ uint64_t sommeBilles(uint64_t billes)
 int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra jouer le prochain coup
 {
 	uint32_t nombre_aleatoire = rand()%sommeBilles(billes);
-
-	printf("nb alea: %d\n", nombre_aleatoire);
-
 	uint32_t sommetmp=0;
 	int i;
 	for(i=0;i<9;i++)
@@ -295,34 +292,34 @@ int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra joue
 int partieFinie(uint32_t terrain)
 {
     //horizontal
-    if(terrain & 0x3F == 0x15) return ROND;
-    if(terrain & 0x3F == 0x2A) return CROIX;
+    if((terrain & 0x3F) == 0x15) return ROND;
+    if((terrain & 0x3F) == 0x2A) return CROIX;
 
-    if(terrain & 0xFC0 == 0x540) return ROND;
-    if(terrain & 0xFC0 == 0xA80) return CROIX;
+    if((terrain & 0xFC0) == 0x540) return ROND;
+    if((terrain & 0xFC0) == 0xA80) return CROIX;
 
-    if(terrain & 0x3F000 == 0x15000) return ROND;
-    if(terrain & 0x3F000 == 0x2A000) return CROIX;
+    if((terrain & 0x3F000) == 0x15000) return ROND;
+    if((terrain & 0x3F000) == 0x2A000) return CROIX;
     //vertical
-    if(terrain & 0x30C3 == 0x1041) return ROND;
-    if(terrain & 0x30C3 == 0x2082) return CROIX;
+    if((terrain & 0x30C3) == 0x1041) return ROND;
+    if((terrain & 0x30C3) == 0x2082) return CROIX;
 
-    if(terrain & 0xC30C == 0x4104) return ROND;
-    if(terrain & 0xC30C == 0x8208) return CROIX;
+    if((terrain & 0xC30C) == 0x4104) return ROND;
+    if((terrain & 0xC30C) == 0x8208) return CROIX;
 
-    if(terrain & 0x30C30 == 0x10410) return ROND;
-    if(terrain & 0x30C30 == 0x20820) return CROIX;
+    if((terrain & 0x30C30) == 0x10410) return ROND;
+    if((terrain & 0x30C30) == 0x20820) return CROIX;
     //diagonal
-    if(terrain & 0x30303 == 0x10101) return ROND;
-    if(terrain & 0x30303 == 0x20202) return CROIX;
+    if((terrain & 0x30303) == 0x10101) return ROND;
+    if((terrain & 0x30303) == 0x20202) return CROIX;
 
-    if(terrain & 0x3330 == 0x1110) return ROND;
-    if(terrain & 0x3330 == 0x2220) return CROIX;
+    if((terrain & 0x3330) == 0x1110) return ROND;
+    if((terrain & 0x3330) == 0x2220) return CROIX;
 
     return 0;//personne ne gagne
 }
 
-void modifier_bille(boite* b, int8_t gagnant)
+void modifier_billes(boite* b, int8_t gagnant)
 {
   int32_t i, new , caseLibre,n;
   while(b != NULL)
@@ -389,7 +386,7 @@ int promptCoup()
     printf("entrez un entier entre 1 et 9 pour déterminer la case où jouer\n (1 pour en haut à gauche et 9 pour en bas à droite)\n");
     int i;
     scanf("%d",&i);
-    while(i<=0 | i>9)
+    while((i<=0) || (i>9))
     {
         printf("N'entrez qu'un entier de 1 à 9");
       scanf("%d",&i);
@@ -405,75 +402,68 @@ int32_t promptGamemode()
      while(i<0)
         {
             printf("Voulez vous jouer contre l'IA ou voulez vous que l'IA joue contre elle-même? \n(0 pour JvsIA et N (positif) pour N parties de IAvsIA)");
-            scanf("%d,&i");
+            scanf("%d",&i);
         }
     return i;
 }
 
 boite* choix_graphe()
 {
-    boite * graphe = charger_graphe();
-    if(graphe!=NULL)
+    int32_t i = -1;
+    FILE* file = fopen("graphe.xox","r");
+
+    if(file!=NULL)
     {
-        int i=-1;
-        while(i!= 1 & i !=0)
+        while(i!= 1 && i !=0)
         {
-            printf("Fichier d'IA trouvé.Voulez vous jouer avec cet IA ou en créer une nouvelle?\n(0 pour jouer,1 pour créer)");
+            printf("Fichier d'IA trouvé.Voulez vous jouer avec cet IA ou en créer une nouvelle?\n(0 pour jouer,1 pour créer)\n");
             scanf("%d",&i);
         }
-        if(i==0)
+        if(i!=0)
         {
-            return graphe;
-        }
-        else
-        {
-            printf("Création d'une nouvelle IA.");
+            printf("Création d'une nouvelle IA.\n");
         }
     }
     else
     {
-         printf("Aucun fichier valable de IA n'a été trouvé. Création d'un nouveau potentiel terminator.");
+         printf("Aucun fichier valable d'IA n'a été trouvé. Création d'un nouveau potentiel terminator.\n");
     }
-    int32_t* tab = mymalloc(sizeof(int32_t)*850);
-    boite** add = mymalloc(sizeof(boite*)*850);
+    int32_t* figure = mymalloc(sizeof(int32_t)*850);
+    boite** adresse = mymalloc(sizeof(boite*)*850);
     boite* b = creer_noeud(0);
-    creer_graphe(b,tab,add);
-    myfree(add);
-    myfree(tab);
+    creer_graphe(b,figure,adresse);
+    myfree(figure);
+    myfree(adresse);
+
+
+    printf("%d\n",i);
+    if(i==0)
+    {
+      boite** loadadresse = mymalloc(sizeof(boite*)*850);
+      charger_graphe(b,loadadresse,file);
+      myfree(loadadresse);
+      fclose(file);
+    }
+
+
     return b;
-
-
 }
-//----------------------------------------------------------------------
-int main(int argc, char const *argv[])
+
+
+int32_t changerSymbole(int32_t symbole)
 {
-     //---Création du graphe
-  boite* b = creer_noeud(0);
-  creer_graphe(b,tab,adresseCreer);
-  myfree(adresseCreer);
-  myfree(tab);
+  if(symbole == ROND) return CROIX;
+  if(symbole == CROIX) return ROND;
+  return VIDE;
+}
 
-  //---Sauvegarde du graphe
-  boite** adresseSave = mymalloc(sizeof(boite*)*10000);
-  FILE* file = fopen("graphe.xox","w");
-  save_graphe(b,adresseSave,file);
-  fclose(file);
-  myfree(adresseSave);
-
-  //---Liberation du graphe
-  boite** adresseFree = mymalloc(sizeof(boite*)*10000);
-  free_graphe(b,adresseFree);
-  myfree(adresseFree);
-  //int32_t a =0x2AAAA, b=0x2AAAA;
-  //printf("%d | %d | %d ",rotation180(a, b),get_case(a, 9),get_case(b, 1));
-  //---tests des billes----------------
-    /*uint64_t c = 0x7FFFFFFFFFFFFFFF ;
-	printf("%ld\n",c);
-	printf("%ld\n",get_bille(c,1) );
-	printf("%ld\n",get_bille(c,5) );
-	printf("%ld\n",get_bille(c,9) );
-	printf("%ld\n",sommeBilles(c) );
-	printf("%ld\n",ProchainCoup(c) );
-	printf("%ld\n",ProchainCoup(c) ); -1 croix 1 rond */
-  return 0;
+int promptPremierJoueur()
+{
+  int32_t i=-1;
+  while(i!= 1 && i !=0)
+  {
+    printf("Qui commence?\n0:Vous\n1:l'IA\n");
+    scanf("%d",&i);
+  }
+  return i;
 }
