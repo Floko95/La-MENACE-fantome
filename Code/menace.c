@@ -256,6 +256,13 @@ uint64_t set_bille(uint64_t billes, int Case, int value) //renvoie l'entier bill
 {
     return billes|(value<<((Case-1)*7));
 }
+void set_passage(boite * b)
+{
+    int64_t i =1;
+    i= i<<63;
+    b->bille = b->bille + i;
+
+}
 uint64_t sommeBilles(uint64_t billes)
 {
 	uint32_t i;
@@ -369,6 +376,8 @@ boite* choix_graphe()
     boite** add = mymalloc(sizeof(boite*)*850);
     boite* b = creer_noeud(0);
     creer_graphe(b,tab,add);
+    myfree(add);
+    myfree(tab);
     return b;
 
 
