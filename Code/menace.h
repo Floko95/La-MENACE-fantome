@@ -46,7 +46,9 @@ void save_graphe(boite* b, boite** adresse, FILE* file);
 void free_graphe(boite* b, boite** adresse);
 int checkfree(boite* b, boite** adresse);
 int ProchainCoup(uint64_t billes);
- int partieFinie(uint32_t terrain);
+int partieFinie(uint32_t terrain);
+int est_passe(boite* b);
+void modifier_bille(boite* b, int8_t gagnant);
 //---Interface utilisateur
 int promptCoup();
 int32_t promptGamemode();
