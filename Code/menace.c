@@ -141,7 +141,14 @@ int32_t verify_tab(int32_t terrain, int32_t* tab)
 	}
 	return -i;
 }
-
+int32_t verify_sym(int32_t terrain, int32_t t2)
+{
+    if (symetrie_v(terrain, t2) || symetrie_h(terrain, t2) || symetrie_d1(terrain, t2)
+        || symetrie_d2(terrain, t2) || rotation180(terrain,t2) || rotationD90(terrain, t2)
+        || rotationG90(terrain, t2) || terrain == t2) return 1;
+    else
+        return 0;
+}
 
 boite* creer_noeud(int32_t terrain)
 {
