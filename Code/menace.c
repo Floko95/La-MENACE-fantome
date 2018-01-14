@@ -290,7 +290,9 @@ int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra joue
 	}
 	return 0;
 }
- int partieFinie(uint32_t terrain)
+
+
+int partieFinie(uint32_t terrain)
 {
     //horizontal
     if(terrain & 0x3F == 0x15) return ROND;
@@ -318,8 +320,68 @@ int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra joue
     if(terrain & 0x3330 == 0x2220) return CROIX;
 
     return 0;//personne ne gagne
+}
 
+void modifier_bille(boite* b, int8_t gagnant)
+{
+  int32_t i, new , caseLibre,n;
+  while(b != NULL)
+  {
+    n = 0;
+    new = b->terrain;
+    caseLibre = nb_case_libre(b->terrain);
 
+    for(i = 0; i<SIZE;i++)
+    {
+      if(caseLibre%2 == 1)
+      {
+        new = set_case(b->terrain,i+1,ROND);
+        while(!est_passe(b->suivants[n]))
+        {
+          n++;
+        }
+        if(gagnant == ROND && verify_sym(new, b->suivants[n]->terrain))
+        {
+          b->bille = set_bille(b->bille, i+1, get_bille(b->bille, i+1)+3);
+        }
+        else if(gagnant == CROIX && verify_sym(new, b->suivants[n]->terrain))
+        {
+          b->bille = set_bille(b->bille, i+1, get_bille(b->bille, i+1)-1);
+        }
+        else if(gagnant == VIDE && verify_sym(new, b->suivants[n]->terrain))
+        {
+          b->bille = set_bille(b->bille, i+1, get_bille(b->bille, i+1)+1);
+        }
+      }
+      else
+      {
+        new = set_case(b->terrain,i+1,CROIX);
+        while(!est_passe(b->suivants[n]))
+        {
+          n++;
+        }
+        if(gagnant == ROND && verify_sym(new, b->suivants[n]->terrain))
+        {
+          b->bille = set_bille(b->bille, i+1, get_bille(b->bille, i+1)-1);
+        }
+        else if(gagnant == CROIX && verify_sym(new, b->suivants[n]->terrain))
+        {
+          b->bille = set_bille(b->bille, i+1, get_bille(b->bille, i+1)+3);
+        }
+        else if(gagnant == VIDE && verify_sym(new, b->suivants[n]->terrain))
+        {
+          b->bille = set_bille(b->bille, i+1, get_bille(b->bille, i+1)+1);
+        }
+      }
+    }
+    b = b->suivants[n];
+  }
+
+}
+
+int est_passe(boite* b)
+{
+  return b->bille>>63;
 }
 //-----------------------interface utilisateur-----------------------------
 int promptCoup()
