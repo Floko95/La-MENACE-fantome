@@ -376,12 +376,23 @@ boite* choix_graphe()
 //----------------------------------------------------------------------
 int main(int argc, char const *argv[])
 {
-     srand(time(NULL));
-  int32_t* tab = mymalloc(sizeof(int32_t)*10000);
-  boite** add = mymalloc(sizeof(boite*)*10000);
+     //---Création du graphe
   boite* b = creer_noeud(0);
-  //fprintf(stdout, "%p\n", b);
-  creer_graphe(b,tab,add);
+  creer_graphe(b,tab,adresseCreer);
+  myfree(adresseCreer);
+  myfree(tab);
+
+  //---Sauvegarde du graphe
+  boite** adresseSave = mymalloc(sizeof(boite*)*10000);
+  FILE* file = fopen("graphe.xox","w");
+  save_graphe(b,adresseSave,file);
+  fclose(file);
+  myfree(adresseSave);
+
+  //---Liberation du graphe
+  boite** adresseFree = mymalloc(sizeof(boite*)*10000);
+  free_graphe(b,adresseFree);
+  myfree(adresseFree);
   //int32_t a =0x2AAAA, b=0x2AAAA;
   //printf("%d | %d | %d ",rotation180(a, b),get_case(a, 9),get_case(b, 1));
   //---tests des billes----------------
