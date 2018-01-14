@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 #include "menace.h"
 
 
 int main()
 {
 
-
+    srand(time(NULL));
   boite * b =choix_graphe();                                                    //b contient la premiere boite du graphe
   int32_t choixjoueur = promptGamemode();                                       //premier choix de mode de jeu du joueur
   uint8_t symbole_courant,tour,i;
@@ -40,11 +41,12 @@ int main()
         {
             if(tour==1)                                                         //si c'est le tour du joueur
             {
-                terrain_suivant=set_case(boite_courant->terrain,promptCoup(),symbole_courant);//on demande au joueur ou il veut jouer
+                terrain_suivant=set_case(boite_courant->terrain,promptCoup(boite_courant->terrain),symbole_courant);//on demande au joueur ou il veut jouer
                  tour=-1;       //on passe au tour de l'IA
             }
             else
             {
+                printf("Au tour de l'IA:\n");
                 terrain_suivant = set_case(boite_courant->terrain,ProchainCoup(boite_courant->bille),symbole_courant);//on deduit le prochain coup de l'IA
                 tour=1;     //on passe au tour du joueur
             }
@@ -62,7 +64,7 @@ int main()
         }
         if(((partieFinie(boite_courant->terrain)==ROND) && (test== 0)) | ((partieFinie(boite_courant->terrain)==CROIX) &&( test==1)))
         {
-            printf("Le joueur e gagne!\n");                                     //si les ronds ont gagne et que le joueur a pris les ronds, alors le joueur gagne,idem avec les croix
+            printf("Le joueur gagne!\n");                                     //si les ronds ont gagne et que le joueur a pris les ronds, alors le joueur gagne,idem avec les croix
         }
         else if (((partieFinie(boite_courant->terrain)==ROND) && (test== 1)) | ((partieFinie(boite_courant->terrain)==CROIX) &&( test== 0)) )
         {

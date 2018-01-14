@@ -4,7 +4,7 @@
 #include "menace.h"
 
 
-
+//---------------------------manipulation de cases---------------------------------
 int set_case(int terrain, int cases, int value) // cases diot etre le numéro de la case; value doit etre CROIX ROND ou VIDE
 {
     return terrain|(value<<((cases-1)*2));
@@ -25,7 +25,17 @@ int nb_case_libre(int terrain)
 
   return cpt;
 }
-
+int64_t CreerMasque(int Case, int typeMasque)		//case de 1 à 9 et non de 0 à 8
+{
+	assert(Case!=0);
+	if(typeMasque==MASQUE_CASE)
+        return 3 <<(Case-1) *2;
+	else if(typeMasque==MASQUE_BILLE)
+        return 127 <<(Case-1) *7;
+    else
+        return 0;
+}
+//--------------------------symétries et rotations----------------------------------------------------
 int symetrie_v(int32_t t1, int32_t t2) //on regarde si t1 est une syùétrie verticale de t2
 {
 	return 	(get_case(t1,1)==get_case(t2,3))&&(get_case(t1,2)==get_case(t2,2))&&(get_case(t1,3)==get_case(t2,1))&&
@@ -77,16 +87,7 @@ int rotationG90(int32_t t1,int32_t t2)//on regarde si en tournant t1 de 180 degr
   && (get_case(t1,8)==get_case(t2,6)) && (get_case(t1,9) == get_case(t2,3)) ;
 }
 
-int64_t CreerMasque(int Case, int typeMasque)		//case de 1 à 9 et non de 0 à 8
-{
-	assert(Case!=0);
-	if(typeMasque==MASQUE_CASE)
-        return 3 <<(Case-1) *2;
-	else if(typeMasque==MASQUE_BILLE)
-        return 127 <<(Case-1) *7;
-    else
-        return 0;
-}
+//----------------------------------------------manipulation de graphe--------------------------------------
 
 void creer_graphe(boite* b, int32_t* figure, boite** addresse)
 {
@@ -235,19 +236,8 @@ int checkfree(boite* b, boite** adresse)
   return 1;
 }
 
-void afficheTerrain(uint32_t terrain)
-{
-  for(int i=0;i<SIZE/3;i++)
-  {
-    for (int j=0;j<SIZE/3;j++)
-    {
-      printf("%d|",get_case(terrain,i*(SIZE/3)+1+j));
-    }
-    printf("\n");
-  }
-  printf("\n");
-}
 
+//-------------------------------------manipulation de billes------------------------------------------------
 uint64_t get_bille(uint64_t billes, int Case)
 {
   return (billes&CreerMasque(Case,MASQUE_BILLE))/(CreerMasque(Case,MASQUE_BILLE)/127);
@@ -273,6 +263,8 @@ uint64_t sommeBilles(uint64_t billes)
 	}
 	return somme;
 }
+
+//-------------------manipulation partie-------------------------------------
 int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra jouer le prochain coup
 {
 	uint32_t nombre_aleatoire = rand()%sommeBilles(billes);
@@ -318,7 +310,13 @@ int partieFinie(uint32_t terrain)
 
     return 0;//personne ne gagne
 }
-
+int32_t changerSymbole(int32_t symbole)
+{
+  if(symbole == ROND) return CROIX;
+  if(symbole == CROIX) return ROND;
+  return VIDE;
+}
+//----------------------------------------------------------------------------
 void modifier_billes(boite* b, int8_t gagnant)
 {
   int32_t i, new , caseLibre,n;
@@ -381,6 +379,24 @@ int est_passe(boite* b)
   return b->bille>>63;
 }
 //-----------------------interface utilisateur-----------------------------
+void afficheTerrain(uint32_t terrain)
+{
+    int i,j;
+  for(i=0;i<SIZE/3;i++)
+  {
+    for (j=0;j<SIZE/3;j++)
+    {
+        if(get_case(terrain,i*(SIZE/3)+1+j)==ROND)
+            printf("O|");
+        else if(get_case(terrain,i*(SIZE/3)+1+j)==CROIX)
+            printf("X|");
+        else
+            printf("-|");
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
 int promptCoup()
 {
     printf("entrez un entier entre 1 et 9 pour déterminer la case où jouer\n (1 pour en haut à gauche et 9 pour en bas à droite)\n");
@@ -448,15 +464,6 @@ boite* choix_graphe()
 
     return b;
 }
-
-
-int32_t changerSymbole(int32_t symbole)
-{
-  if(symbole == ROND) return CROIX;
-  if(symbole == CROIX) return ROND;
-  return VIDE;
-}
-
 int promptPremierJoueur()
 {
   int32_t i=-1;
@@ -467,3 +474,7 @@ int promptPremierJoueur()
   }
   return i;
 }
+
+
+
+
