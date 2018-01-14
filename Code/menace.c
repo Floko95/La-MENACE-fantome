@@ -260,6 +260,38 @@ int32_t promptGamemode()
     return i;
 }
 
+boite* choix_graphe()
+{
+    boite * graphe = charger_graphe();
+    if(graphe!=NULL)
+    {
+        int i=-1;
+        while(i!= 1 & i !=0)
+        {
+            printf("Fichier d'IA trouvé.Voulez vous jouer avec cet IA ou en créer une nouvelle?\n(0 pour jouer,1 pour créer)");
+            scanf("%d",&i);
+        }
+        if(i==0)
+        {
+            return graphe;
+        }
+        else
+        {
+            pritnf("Création d'une nouvelle IA.");
+        }
+    }
+    else
+    {
+         pritnf("Aucun fichier valable de IA n'a été trouvé. Création d'un nouveau potentiel terminator.");
+    }
+        int32_t* tab = mymalloc(sizeof(int32_t)*850);
+        boite** add = mymalloc(sizeof(boite*)*850);
+        boite* b = creer_noeud(0);
+        creer_graphe(b,tab,add);
+        return b;
+
+
+}
 //----------------------------------------------------------------------
 int main(int argc, char const *argv[])
 {
