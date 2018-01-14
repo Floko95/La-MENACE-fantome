@@ -154,6 +154,82 @@ boite* creer_noeud(int32_t terrain)
 	return b;
 
 }
+
+void save_graphe(boite* b, boite** adresse, FILE* save)
+{
+  int32_t n=0;
+  if(b!=NULL)
+  {
+    int32_t i = 0;
+    if(checkfree(b, adresse))
+    {
+      fwrite(&(b->bille), sizeof(int64_t), 1, save);
+      while(adresse[n]!=NULL)                                                   //on trouve la premiere place libre dans adresse
+        n++;
+      adresse[n]=b;
+    }
+
+    for(i = 0; i<nb_case_libre(b->terrain); i++)
+    {
+      save_graphe(b->suivants[i],adresse,save);
+    }
+  }
+}
+
+void charger_graphe(boite* b, boite** adresse, FILE* load)
+{
+  int32_t n=0;
+  if(b!=NULL)
+  {
+    int32_t i = 0;
+    if(checkfree(b, adresse))
+    {
+      fread(&(b->bille), sizeof(int64_t), 1, load);
+      while(adresse[n]!=NULL)                                                   //on trouve la premiere place libre dans adresse
+        n++;
+      adresse[n]=b;
+    }
+
+    for(i = 0; i<nb_case_libre(b->terrain); i++)
+    {
+      charger_graphe(b->suivants[i],adresse,load);
+    }
+  }
+}
+
+void free_graphe(boite* b, boite** adresse)
+{
+  if(b!=NULL && checkfree(b,adresse))                                           //On verifie que b ne pointe pas sur NULL et qu'il na pas déjà été libéré
+  {
+    uint32_t i = 0, caseLibre = nb_case_libre(b->terrain), n=0;                 //declaration des variable
+    boite* adr[SIZE] = {NULL};                                                  //adr est une copie de b->suivants.
+    for(i=0; i<caseLibre; i++)                                                  //on effectue la copie
+    {
+      adr[i]=b->suivants[i];
+    }
+    while(adresse[n]!=NULL)                                                     //on trouve la premiere place libre dans adresse
+      n++;
+    adresse[n]=b;                                                               //on stocke b dans addresse
+    if(b->suivants!=NULL)
+      myfree(b->suivants);
+    myfree(b);                                                                  //on libere b
+    for(i=0; i<caseLibre; i++)
+    {
+      free_graphe(adr[i],adresse);                                              //on poursuit sur les fils
+    }
+  }
+}
+
+int checkfree(boite* b, boite** adresse)
+{
+  uint32_t i = 0;
+  for(i=0; i<mytabsize(adresse, sizeof(boite*)); i++)
+  {
+    if(adresse[i]==b) return 0;
+  }
+  return 1;
+}
+
 void afficheTerrain(uint32_t terrain)
 {
   for(int i=0;i<SIZE/3;i++)
