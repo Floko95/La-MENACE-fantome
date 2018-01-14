@@ -202,6 +202,37 @@ int ProchainCoup(uint64_t billes)	//renvoie la case (1 à 9) où l'IA devra joue
 	}
 	return 0;
 }
+ int partieFinie(uint32_t terrain)
+{
+    //horizontal
+    if(terrain & 0x3F == 0x15) return ROND;
+    if(terrain & 0x3F == 0x2A) return CROIX;
+
+    if(terrain & 0xFC0 == 0x540) return ROND;
+    if(terrain & 0xFC0 == 0xA80) return CROIX;
+
+    if(terrain & 0x3F000 == 0x15000) return ROND;
+    if(terrain & 0x3F000 == 0x2A000) return CROIX;
+    //vertical
+    if(terrain & 0x30C3 == 0x1041) return ROND;
+    if(terrain & 0x30C3 == 0x2082) return CROIX;
+
+    if(terrain & 0xC30C == 0x4104) return ROND;
+    if(terrain & 0xC30C == 0x8208) return CROIX;
+
+    if(terrain & 0x30C30 == 0x10410) return ROND;
+    if(terrain & 0x30C30 == 0x20820) return CROIX;
+    //diagonal
+    if(terrain & 0x30303 == 0x10101) return ROND;
+    if(terrain & 0x30303 == 0x20202) return CROIX;
+
+    if(terrain & 0x3330 == 0x1110) return ROND;
+    if(terrain & 0x3330 == 0x2220) return CROIX;
+
+    return 0;//personne ne gagne
+
+
+}
 //-----------------------interface utilisateur-----------------------------
 int promptCoup()
 {
@@ -222,7 +253,10 @@ int32_t promptGamemode()
 
     int32_t i=-1;
      while(i<0)
-        printf("Voulez vous jouer contre l'IA ou voulez vous que l'IA joue contre elle-même? \n(0 pour JvsIA et N (positif) pour N parties de IAvsIA)");
+        {
+            printf("Voulez vous jouer contre l'IA ou voulez vous que l'IA joue contre elle-même? \n(0 pour JvsIA et N (positif) pour N parties de IAvsIA)");
+            scanf("%d,&i");
+        }
     return i;
 }
 
